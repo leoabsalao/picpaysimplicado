@@ -1,12 +1,14 @@
 package com.picpaysimplicado.services;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.picpaysimplicado.domain.user.User;
 import com.picpaysimplicado.domain.user.UserType;
+import com.picpaysimplicado.dtos.UserDTO;
 import com.picpaysimplicado.repositories.UserRepository;
 
 @Service
@@ -27,6 +29,16 @@ public class UserService {
 
     public User findUserById(Long id) throws Exception{
         return this.repository.findById(id).orElseThrow(() -> new Exception("Usuário não encontrado"));
+    }
+
+    public User createUser(UserDTO data){
+        User newUser = new User(data);
+        this.saveUser(newUser);
+        return newUser;
+    }
+
+    public List<User> getAllUsers(){
+        return this.repository.findAll();
     }
 
     public void saveUser(User user){
