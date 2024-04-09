@@ -25,12 +25,15 @@ public class TransactionService {
     @Autowired
     private RestTemplate restTemplate;
 
+    @Autowired
+    private NotificatioService notificatioService;
+
     public boolean authorizeTransaction(User user, BigDecimal value){
         //  ResponseEntity<Map> authorizationResponse = restTemplate.getForEntity("https://run.mocky.io/v3/8fafdd68-a", null)            
         return true;
     }
 
-    public void createTransaction(TransactionDTO transaction) throws Exception{
+    public Transaction createTransaction(TransactionDTO transaction) throws Exception{
         User sender = this.userService.findUserById(transaction.senderId());
         User receiver = this.userService.findUserById(transaction.receiverId());
 
@@ -56,6 +59,11 @@ public class TransactionService {
         this.repository.save(newTransaction);
         this.userService.saveUser(sender);
         this.userService.saveUser(receiver);
+
+        this.notificatioService.sendNotification(sender, "Transação realizada com sucesso!");
+        this.notificatioService.sendNotification(receiver, "Transação recebida com sucesso!");
+
+        return newTransaction;
     }
     
 }
